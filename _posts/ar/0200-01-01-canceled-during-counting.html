@@ -8,12 +8,9 @@ img: "cancelled.png"
 map: "tunisia.map-qyh27u2n,tunisia.cancelled"
 legend: true
 sources:
-  - title: "Total Votes without blank and canceled ballots"
-    csv: "https://raw.github.com/fwelections/tunisia-election-data/master/2011data/misc/Blank%20Ballots.csv"
-    description: "This dataset contains the number of votes without blank and canceled ballots of the 2011 Elections in Tunisia. It was originally obtained from the <a href='http://www.isie.tn/Fr/image.php?id=771'>National Constituent Assembly Report on the Elections (PDF)</a>, published by the <a href='http://www.isie.tn'>Independent High Commission for Elections</a> in February, 2012, and converted to CSV by <a href='https://github.com/fwelections/tunisia-election-data'>FWElections</a>."
-  - title: "Blank Ballots"
-    csv: "https://raw.github.com/fwelections/tunisia-election-data/master/2011data/misc/Blank%20Ballots.csv"
-    description: "This dataset contains the number of blank ballots from the 2011 Elections. It was originally obtained from the <a href='http://www.isie.tn/Fr/image.php?id=771'>National Constituent Assembly Report on the Elections (PDF)</a>, published by the <a href='http://www.isie.tn'>Independent High Commission for Elections</a> in February, 2012, and converted to CSV by <a href='https://github.com/fwelections/tunisia-election-data'>FWElections</a>."
+  - title: "Number of canceled ballots"
+    url: "https://github.com/fwelections/tunisia-election-data/tree/master/fulldatasets/results"
+    description: "This dataset canceled ballots during the 2011 Elections in Tunisia. It was originally obtained from the <a href='http://www.isie.tn/Fr/image.php?id=771'>National Constituent Assembly Report on the Elections (PDF)</a>, published by the <a href='http://www.isie.tn'>Independent High Commission for Elections</a> in February, 2012, and provided as .json files by <a href='https://github.com/fwelections/tunisia-election-data'>FWElections</a>."
 description: "<p>This map visualizes the prevalence of votes invalidated during counting rather than those ballots that were invalidated at polling centers. This shows the areas where more robust voter education efforts, or tactile ballots, could have the greatest impact.  Nationwide, the total number of cancelled ballots was under 4%. However, in some areas, mostly rural areas where illiteracy is high and, coincidentally, where unrest and discord is high, the number of cancelled ballots is much higher.</p>"
 ---
 The map of [where cancelled votes came from](http://developmentseed.org/tunisia-election-data/en/canceled-during-counting/) relies polling center data available as [individual `.json` files](https://github.com/fwelections/tunisia-election-data/tree/master/fulldatasets/results) that were provided as a two CSV tables - one containing latitude + longitude coordinates and the other containing detailed election data. 
