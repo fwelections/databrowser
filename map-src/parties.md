@@ -1,6 +1,6 @@
 # Political Party Results
 
-The [textual heat map of political party results](http://developmentseed.org/tunisia-election-data/en/political-parties) relies on two data sets: 
+The [textual heat map of political party results](http://fwelections.github.com/databrowser/en/political-parties) relies on two data sets: 
 
 - [tabular data for the 3 major parties](https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty)
 - geometry for the 27 districts derived from the [delegtion shapefiles](https://github.com/fwelections/tunisia-election-data/tree/master/shapes). 

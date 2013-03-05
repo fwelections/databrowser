@@ -1,6 +1,6 @@
 # Site Architecture 
 
-[Tunisia Election Data](http://developmentseed.org/tunisia-election-data/en/projects/) is built on a framework called [Jekyll](https://github.com/mojombo/jekyll). Jekyll is a relatively light weight site generator that scales well with additional content. If you have not worked with it before, do not worry as it is very straight forward.
+[Tunisia Election Data](http://fwelections.github.com/databrowser/en/projects/) is built on a framework called [Jekyll](https://github.com/mojombo/jekyll). Jekyll is a relatively light weight site generator that scales well with additional content. If you have not worked with it before, do not worry as it is very straight forward.
 
 ### High level overview of Jekyll
 Jekyll works by populating the _posts folder with html files. These HTML file follow a standard format. In the head area we describe parameters on how the page will be rendered. We specify things like the type of page it is, whether there is a legend on the map ID, the language, etc. This information is found between the two sets of dashes --- ---. Below that is what referred to as 'content' we choose to render depending on the page.
@@ -53,7 +53,7 @@ We like hosting websites on github. Github makes it super simple to deploy and m
 
 # Data Management and Maps
 
-A powerful, combination of [Postgres](http://www.postgresql.org/about/) and [PostGIS](postgis.org/docs/) powers all maps on [Tunisia Election Data](http://developmentseed.org/tunisia-election-data/en/projects/). Postgres is a very powerful open source relational database that you can access via your command line and is very well documented. For this tutorial, however, we will interact with Postgres from the command line. PostGIS is the geospatial extension that allows for storage and manuipulation of geographic data in Postgres. Together, Postgres + PostGIS allow for flexible data manipulation and highly refined cartography.
+A powerful, combination of [Postgres](http://www.postgresql.org/about/) and [PostGIS](postgis.org/docs/) powers all maps on [Tunisia Election Data](http://fwelections.github.com/databrowser/en/projects/). Postgres is a very powerful open source relational database that you can access via your command line and is very well documented. For this tutorial, however, we will interact with Postgres from the command line. PostGIS is the geospatial extension that allows for storage and manuipulation of geographic data in Postgres. Together, Postgres + PostGIS allow for flexible data manipulation and highly refined cartography.
 
 __IMPORTANT__: Before attempting to recreate the maps in this project be sure to read about working with [PostGIS and TileMill](http://mapbox.com/tilemill/docs/guides/postgis-work/). Here you will find relevant links for downloading and installing Postgres and PosGIS. You need to learn how to [create a new postgres database + install PostGIS](http://mapbox.com/tilemill/docs/guides/postgis-work/#creating_a_simple_postgis_database) before proceeding any further. 
 
@@ -76,7 +76,7 @@ shp2pgsql -D -s 4326 path-to/shapes/delegations.shp delegations | psql -d tunisi
 
 ### Data processing for making maps
 
-For detailed instructions on how we created each of the four maps on [Tunisia Election Data](http://developmentseed.org/tunisia-election-data/en/projects/), see each maps documentation.
+For detailed instructions on how we created each of the four maps on [Tunisia Election Data](http://fwelections.github.com/databrowser/en/projects/), see each maps documentation.
 
 - Actively Registered vs. Eligible Voters
 - Political Party Results
