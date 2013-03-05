@@ -8,10 +8,17 @@ img: "party.png"
 map: "tunisia.map-ljvg81zf,tunisia.parties"
 legend: true
 sources:
+  - title: "Tabular data for the 3 major parties"
+    csv: "https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty"
+    description: "Tabular data showing 2011 election outcomes by political party."
+  - title: "Tunisia Delegation Shapefiles"
+    url: "https://github.com/fwelections/tunisia-election-data/tree/master/shapes"
+    description: "Dataset containing geometry for Tunisia's Delegations administrative unit."
+
 description: "<p>This visualization highlights the relative strengths of the three top political parties in Tunisia: Ennahda, CPR, and Ettakatol which form the coalition government in Tunisia. Each province has 3 percantages: blue represents the Ennahdha party, green represents CPR party and orange represent Ettakatol party. The largest number in each province represents the majority party.</p>"
 ---
 
-The [textual heat map of political party results](http://developmentseed.org/tunisia-election-data/en/political-parties) relies on two data sets: 
+The [textual heat map of political party results](http://fwelections.github.com/databrowser/en/political-parties) relies on two data sets: 
 
 - [tabular data for the 3 major parties](https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty)
 - geometry for the 27 governorates we will derive from the [delegation shapefiles](https://github.com/fwelections/tunisia-election-data/tree/master/shapes). 
