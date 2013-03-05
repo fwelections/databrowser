@@ -1,7 +1,7 @@
 auto: true
 server: true
 permalink: /:categories/:title
-baseurl: /tunisia-election-data
+baseurl: /databrowser
 github: "http://github.com/fwelections/databrowser"
 languages:
   - name: 'English'
