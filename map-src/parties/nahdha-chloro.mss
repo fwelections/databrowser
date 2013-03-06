@@ -1,5 +1,10 @@
+// Use this stylesheet to show a chloropleth map of ennahdha's
+// share of the electorate.
+// You will probably want to comment out all other style sheets,
+// though this is not necessary.
+
 /*
-#parties::nahdha {
+#parties::chloropleth {
   polygon-opacity:.45;
   line-color:#def;
   line-opacity:.15;
