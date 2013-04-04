@@ -63,7 +63,7 @@ h2 {
   font-weight:300;
   }
 h3 {
-  font-size:42px;
+  font-size:30px;
   line-height:46px;
   margin:0 0 10px;
   font-weight:300;
@@ -609,4 +609,80 @@ Details: http: //perishablepress.com/press/2009/12/06/new-clearfix-hack*/
     .paging.top .icon {
       background-position:-240px -40px;
       }
+}
+
+/*
+
+rad's change
+*/
+
+.downcontrols {
+  position: absolute;
+  background: rgba(0,0,0,.5);
+  bottom: 16px;
+  right: 0px;
+  width: 33.3333%;
+  color:#fff;
+  z-index: 19;
+  border: 1px solid black;
+  border-right: 0; border-bottom: 0;
+  }
+  .downcontrols a {
+    float: left;
+    display: block;
+    border-right: 1px solid #000;
+    }
+  .downcontrols a:hover {  
+  color:white;
+  background: #172623;
+  position: relative; 
+    -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 1), inset 0 0px 3px rgba(0, 0, 0, 0.9);
+    -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 1), inset 0 0px 3px rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 1), inset 0 0px 3px rgba(0, 0, 0, 0.9);}
+  .downcontrols a.unavailable:hover { background: transparent;}
+  .downcontrols a.active {
+  background: #172623;
+  position: relative; 
+    -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 1), inset 0 0px 3px rgba(0, 0, 0, 0.9);
+    -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 1), inset 0 0px 3px rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 1), inset 0 0px 3px rgba(0, 0, 0, 0.9);
+}
+
+#desc,#about {
+  height: 40px;
+  width: 33.33%;
+  position: relative;
+  text-align: center;
+  }
+#meth {
+  width: 32.33%;
+  height: 40px;
+  text-decoration: none;
+  position: relative;
+  border-right: 0;
+  text-align: center;
+  }
+#desc span,#about span,#meth span {
+  position: relative;
+  top: 10px;
+}
+#shelf {
+opacity: 1;
+background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
+    border-left: 1px solid black;
+    bottom: 57px;
+    overflow-x: hidden;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width:33.3333%;
+    z-index:9;
+}
+.shelf-inner {
+    color: white;
+    font: -moz-info;
+    line-height: 25px;
+    padding: 70px 20px 20px;
+    text-align: justify;
+    display:none;
 }

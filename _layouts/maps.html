@@ -30,67 +30,59 @@
         <a href='{{site.baseurl}}/{{page.language}}/projects' class='button'>Projects</a>
         <a href='#' id='toggle' class='icon toggle'>Toggle Header</a>
       </div>
-      <div class='title-block'>
-        <h2>{{ page.title }} <span class='subtitle'>{{ page.subtitle }}</span></h2>
-        {{ page.description | truncate:240 }} <a href='#' id='learn-more'>Learn more &raquo;</a>
-      </div>
     </div>
     <div id='controls'></div>
   </div>
 
   <div class='map' id='map'></div>
+  <div id='shelf' class='shelf' >
+   <div id='description' class='shelf-inner'>
+   {% if page.description != empty %}
+	
+	{{ page.description }}
+	{% endif %}
+   </div>
+  <div id='sources' class='shelf-inner'>
+    {% if page.sources | size > 0 %}
+
+	{% for source in page.sources %}
+	<div class='source-entry'>
+	<h4 class='data-title'>{{source.title}}</h4>
+	<p>{{source.description | markdownify}}</p>
+	   {% if source.csv | size > 0 %}
+	   <a class='action data csv' href='{{source.csv}}'><span class='csv'></span>CSV</a>
+	   {% endif %}
+	   {% if source.pdf | size > 0 %}
+	   <a class='action data pdf' href='{{source.pdf}}'><span class='pdf'></span>PDF</a>
+	   {% endif %}
+	    {% if source.url | size > 0 %}
+	   <a class='action data link' href='{{source.url}}'><span class='link'></span>www</a>
+	   {% endif %}
+	</div>
+	{% endfor %}
+	{% endif %} 
+   </div>
+  <div id='methodology' class='shelf-inner'>
+	{% if page.content != empty %}
+
+	{{ page.content | replace: '!SITE.GITHUB!', site.github  | markdownify }}
+	{% endif %}
+   </div>
+</div>
+  <div class='downcontrols'>
+      <a id="desc" href="#" class='active' rel='description'><span>Description</span></a>
+      <a id="about" href="#" rel='sources'><span>About the data</span></a>
+      <a href="#" id="meth" rel='methodology'><span>Methodology</span></a>
+ </div>
   <div class='map-overlay {{ page.url | replace: "/","" }}'>
     <div id='infographic' style='display:none'>
   </div>
+  
 
-<div id='modal'>
-	<div class='popup'>
-	<div class='header'>
-    <div class='inner'>
-      <h2>{{ page.title }} Project</h2>
-      <a class='close' href='#close'>&times;</a>
-    </div>
-	</div>
-	<div class='content prose'>
-{% if page.description != empty %}
-<h2>Description</h2>
-{{ page.description }}
-{% endif %}
-
-{% if page.sources | size > 0 %}
-<h2>About the Data</h2>
-
-{% for source in page.sources %}
-<div class='source-entry'>
-<h4 class='data-title'>{{source.title}}</h4>
-<p>{{source.description | markdownify}}</p>
-   {% if source.csv | size > 0 %}
-   <a class='action data csv' href='{{source.csv}}'><span class='csv'></span>CSV</a>
-   {% endif %}
-   {% if source.pdf | size > 0 %}
-   <a class='action data pdf' href='{{source.pdf}}'><span class='pdf'></span>PDF</a>
-   {% endif %}
-    {% if source.url | size > 0 %}
-   <a class='action data link' href='{{source.url}}'><span class='link'></span>www</a>
-   {% endif %}
-</div>
-{% endfor %}
-{% endif %}
-{% if page.content != empty %}
-<h2>Methodology</h2>
-{{ page.content | replace: '!SITE.GITHUB!', site.github  | markdownify }}
-{% endif %}
-
-<h2>About</h2>
-  <div class='partners'>
-  A project by <a href='http://www.opengov.tn/'>OpenGovTN</a>, <a href='http://www.democracyinternational.com'>Democracy International</a>, <a href='http://newrightsgroup.net'>New Rights Group</a> and <a href='http://developmentseed.org'>DevelopmentSeed</a>.
-  </div>
-</div>
-</div>
 </div>
   <div class='attribution'>
     A project by
-    <a href='http://www.opengov.tn/'>OpenGovTN</a>, <a href='http://www.democracyinternational.com'>Democracy International</a>, <a href='http://newrightsgroup.net'>New Rights Group</a> and <a href='http://developmentseed.org'>DevelopmentSeed</a> 
+    <a href='http://www.democracyinternational.com'>Democracy International</a>, <a href='http://newrightsgroup.net'>New Rights Group</a> and <a href='http://developmentseed.org'>DevelopmentSeed</a> 
   </div>
 </div>
 
@@ -112,7 +104,7 @@ $(function () {
       map.addLayer(o.layer)
       map.setZoomRange(7, 12);
       
-      map.zoom(8).center({lat:36.18, lon: 9.767})
+      map.zoom(8).center({lat:36.18, lon:10.569})
       map.setPanLimits([{ lat: 2.0532, lon:4.2235 }, { lat: 42.5925, lon:17.8268 }]);
 
 

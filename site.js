@@ -23,4 +23,14 @@ $(function() {
     $('.dropdown-hover').click(function() {
         return false;
     });
+    $('.downcontrols a').click(function(e){
+    e.preventDefault();
+    var content = $(this).attr('rel');
+    var contentToHide=$('.active').attr('rel');
+    $('.active').removeClass('active');
+    $(this).addClass('active');
+    $('#'+contentToHide).hide();
+    $('#'+content).show();
 });
+});
+
