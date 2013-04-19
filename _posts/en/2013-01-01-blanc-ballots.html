@@ -10,7 +10,7 @@ legend: false
 sources:
   - title: "Election Results"
     url: "https://github.com/fwelections/tunisia-election-data/tree/master/2011data/misc"
-    description: "Blank ballots are ballots cast by voters without a tick for a candidate, political party or coalition list.  In general, a blank ballot is cast by a voter who wishes to exercise his or her right to vote, but is dissatisfied with his or her candidate options or the electoral process.  In the 2011 National Constituent Assembly elections, nearly 100,000 voters cast blank ballots.  This visualization show the number of blank ballots cast per electoral district from the 2011 NCA elections. </p>"
+    description: "<p> Blank ballots are ballots cast by voters without a tick for a candidate, political party or coalition list.  In general, a blank ballot is cast by a voter who wishes to exercise his or her right to vote, but is dissatisfied with his or her candidate options or the electoral process.  In the 2011 National Constituent Assembly elections, nearly 100,000 voters cast blank ballots.  This visualization show the number of blank ballots cast per electoral district from the 2011 NCA elections. </p>"
 ---
 
 
@@ -46,18 +46,7 @@ Now run the following from your command line to populate the table:
 blank-votes.csv | psql -d tunisia -c "COPY blank FROM STDIN WITH DELIMITER ',' CSV HEADER"
 </pre>
 
-### 2. Update table
-
-We want to map the total number of votes that did not count, so we need to aggregate Blank votes (those votes for parties that did not win mandates, leaving voters un-represented) with cancelled ballots, and blank ballots. 
-
-To create and populate this new column, run the following SQL: 
-
-<pre>
-alter table blank add column map numeric;
-update blank set map = blank + blank_ballots + cancelled_ballots;
-</pre>
-
-### 3. Dissolving Delegations into Districts
+### 2. Dissolving Delegations into Districts
 
 *Note: If you have already performed this step for the Political parties map, you can skip to step 4.*
 
