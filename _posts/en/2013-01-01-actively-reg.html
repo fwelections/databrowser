@@ -1,74 +1,27 @@
 ---
 layout: maps
 category: en
-title: "Voter eligibility and voter registration"
-subtitle: "Visualizing the proportion of actively registered voters vis-à-vis the eligible voting population"
+title: "Voter registration and voter turnout"
+subtitle: "Highlighting the level of actively registered voter turnout in the 2011 National Constituent Assembly Elections"
 language: en
-img: "eligible.png"
-map: "tunisia.map-u3z7fdnm,tunisia.eligibility"
+img: "active.png"
+map: "tunisia.map-76ss13lc,tunisia.acvtivelyreg"
 legend: false
 sources:
-  - title: "Distribution of registered voters by delegation, Appendix 8"
-    url: "https://github.com/fwelections/tunisia-election-data/blob/master/2011data/RegistrationDistributionPerDelegation/RegistDistibutionperDelegation.csv"
-    description: "This CSV contains the number of eligible voters and registered voters per delegation. It was originally obtained from the <a href='http://www.isie.tn/Fr/image.php?id=771'>National Constituent Assembly Report on the Elections (PDF)</a>, published by the <a href='http://www.isie.tn'>Independent High Commission for Elections</a> in February, 2012, and converted to CSV by <a href='https://github.com/fwelections/tunisia-election-data'>OpenGovTN</a>."
-description: "<p>Identifying delegations with low ratios of actively registered voters compared to eligible voters is a key step for developing more robust voter outreach and registration efforts prior to the next election. This visualization highlights where targeting of resources and efforts by the Independent High Commission for Elections (ISIE), political parties and civil society organizations would have the greatest impact.</p>"
+  -title: " Actively,passively and total  voter turnout "
+    url: "https://github.com/fwelections/tunisia-election-data/blob/master/2011data/misc/Turnout.csv"
+    description: "This CSV contains the number of actively registered voters who cast ballots and the total number of actively registered voters per electoral district. It was originally obtained from the National Constituent Assembly Report on the Elections (PDF), published by the Independent High Commission for Elections in February 2012 and converted to CSV by <a href='https://github.com/fwelections/tunisia-election-data'>OpenGovTN</a>."
+description: "<p>un électeur activement enregistré représente un électeur potentiel, selon la liste électorale de référence, qui a choisi de se déplacer au centre d'inscription électorale en avance de les élections de l'assemblé nationale constituante de 2011.  L'I.S.I.E. a fortement encouragé les électeurs potentiels à accomplir cette action et ce par le déploiement  de divers efforts tel que le prolongement de la date limite prévu pour cette opération, l'augmentation des centres d'inscription, le déploiment de centres d'inscription mobiles et des campagnes publicitaires de proximité et ce suite au faible taux de participation initialement enregistrés lors de la première date limite qui a été prévu pour le Août 2011. 4,123,602 électeurs parmi 7,993,924 votants potentiels suivant la base du registre des données des cartes d’identité nationales, se sont enregistrés volontairement pendant la période allant du Juillet au Août 2011,soit 51,6% des électeurs potentiels.  86,4% de ces électeurs ont accomplis leur devoir de vote lors des élections du 23 Octobre 2011.</p>"
 ---
-<p>Tunisia is made up of 24 governorates, which are subdivided into 264 delegations. This map visualizes the disparity between actively registered voters and eligible voters by delegation. Actively registered voters meet the age and citizenship requirements for voting and have registered to vote. Eligible voters meet the requirements to vote, but have not actively registered to vote. </p>
+<p>TODO </p>
 
 Make sure you have read the [documentation regarding installing and setting up a PostGIS-enabled database](!SITE.GITHUB!/blob/gh-pages/setup.md#data-management-and-maps).
 
 ### Importing data to PostGIS
 
-This map is comprised of two datasets - [delegation shapefiles](https://github.com/fwelections/tunisia-election-data/tree/master/shapes) and tabular [eligibility + registration data](https://github.com/fwelections/tunisia-election-data/blob/master/2011data/RegistrationDistributionPerDelegation/RegistDistibutionperDelegation.csv). To import the shapefiles see the [setup.md for instructions on importing geographic data](!SITE.GITHUB!/blob/gh-pages/setup.md#importing-geographic-data-to-postgis).
+This map is comprised of two datasets - [District shapefiles](https://github.com/fwelections/tunisia-election-data/tree/master/shapes) and tabular [registration and turnout data](https://github.com/fwelections/tunisia-election-data/blob/master/2011data/misc/Turnout.csv). To import the shapefiles see the [setup.md for instructions on importing geographic data](!SITE.GITHUB!/blob/gh-pages/setup.md#importing-geographic-data-to-postgis).
 
-To import the tabular registration + eligibility data, first set up the table in the tunisia database. Run the following SQL to set up your table. 
-
-<pre>
-create table regis (
-	district_id int,
-	district text,
-	delegation text, 
-	actively_registred numeric,
-	eligible_voters numeric,
-	ratio numeric
-	);
-</pre>
-
-To populate the table, run the following from your command line (not the command shell)
-
-<pre>
-	 cat path-to/2011data/RegistrationDistributionPerDelegation/RegistDistibutionperDelegation.csv | psql -d tunisia -c "COPY regis FROM STDIN WITH DELIMITER ',' CSV HEADER"
-</pre>
-
-### Joining spatial data to tabular data 
-
-Now that both datasets are in your postgres database, you need join the spatial data (the delegation shapefile) to the tabular data (the RegistDistibutionperDelegation.csv). To do this, run the following SQL.
-
-<pre>
-create table eligibility as (
-	select
-		a.*,
-		coalesce(cast(b.actively_registred as text), 'n/a') as actively_registred,
-		coalesce(cast(b.eligible_voters as text), 'n/a') as eligible_voters,
-		ratio,
-		coalesce(cast(round(b.ratio) as text)||'%', 'n/a') as ratio_c
-	from delegations a left join regis b
-	on replace(replace(lower(cast(circo_id as text)||name_deleg), ' ', ''), '-', '') = replace(replace(replace(lower(cast(district_id as text)||delegation), ' ', ''), '-', ''), '\r', '')
-	order by ratio desc
-);
-</pre>
-
-In addition to performing a `left join` on the geometry to preserve geometry where records from the tabular data do not match, this query reformats the `actively_registered`, `eligible_voters`, and `ratio` columns for cartographic purposes. 
-
-- **Round** each value to the nearest integer
-- **Cast** values in each column as text in order to concatenate a `%` sign.
-- **Coalesce** each value and then the string 'n/a' so that NULL values are still displayed accurately and aesthetically. 
-
-Note that only about 215 of the 270 or so records (rows) match. To get the rest of the records to match, run manual updates changing the names in only one table. 
-
-<pre>
-update regis set delegation = 'Médina' where delegation = 'Medina';
-</pre>
+TODO
 
 You're now ready to style your map in TileMill. Create a new project. In TileMill create a PostGIS layer following the [online documentation](http://mapbox.com/tilemill/docs/guides/postgis-work/), specifying the `eligibility` table.
 
