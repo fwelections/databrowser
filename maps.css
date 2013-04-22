@@ -764,7 +764,7 @@ display:block;
 #controls{
   position:absolute;
   bottom:0;
-  right:80px;
+  left:29px;
   }
   .snowcover #controls {
     bottom:-45px;
