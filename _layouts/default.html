@@ -11,6 +11,23 @@
   <title>Tunisia Open Data Project {% if page.url != '/index.html' %}| {{page.title}}{% endif %}</title>
   <link href='{{site.baseurl}}/site.css' rel='stylesheet'>
   <script src='{{site.baseurl}}/site.js'></script>
+  <script src='{{site.baseurl}}/jquery.bxslider.min.js'></script>
+  <link href='{{site.baseurl}}/jquery.bxslider.css' rel='stylesheet'>
+  <script type='text/javascript'> 
+   $(document).ready(function(){
+     var w= Math.floor($(window).width()/4);
+         console.log(w);
+         
+     $('.bxslider').bxSlider({
+	  slideWidth:w,
+          auto: true,
+	  minSlides: 4,
+	  maxSlides: 4,
+          moveSlides:1,
+	  slideMargin: 0
+     });
+   });
+ </script>
 </head>
   <body class='{% if page.url == "/" %}front{% endif %}'>
 
@@ -19,7 +36,7 @@
     </div>
     <div id='footer' class='projects'>
       <div class='limiter' style='padding:20px 40px 20px 34px'>
-        <p class='footer-text'>A project exploring open data<span class='footer-text fr'><a href='http://www.opengov.tn/'>OpenGovTN</a> | <a href='http://www.democracyinternational.com'>Democracy International</a> | <a href='http://newrightsgroup.net'>New Rights Group</a> | <a href='http://developmentseed.org'>DevelopmentSeed</a></span></p> 
+        <p class='footer-text'>A project exploring open data<span class='footer-text fr'> <a href='http://www.democracyinternational.com'>Democracy International</a> | <a href='http://newrightsgroup.net'>New Rights Group</a> | <a href='http://developmentseed.org'>DevelopmentSeed</a></span></p> 
 
       </div>
     </div>
