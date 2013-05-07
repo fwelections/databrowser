@@ -1,20 +1,19 @@
 ---
 layout: maps
-category: ar
-title: "The votes that did not count"
-subtitle: "Highlighting where local-level coalitions could have the greatest impact"
-language: ar
-img: "wasted.png"
-map: "tunisia.map-u26xc2ee,tunisia.wastd"
+category: fr
+title: "Le scrutin et la représentation politique"
+subtitle: "Visualisation de la proportion des bulletins blancs dans les  suffrages  exprimés Lors des élections de l'Assemblée Nationale Constituante 2011"
+language: fr
+img: "blank.png"
+map: "tunisia.map-0gn2ey54,tunisia.blank-ballots"
 legend: false
 sources:
-  - title: "Election Results"
+  - title: "Résultats des élections"
     url: "https://github.com/fwelections/tunisia-election-data/tree/master/2011data/misc"
-    description: "This dataset includes tables with the number of blank, canceled, wasted, and spoiled votes received by each party, by district. It was converted from <a href='https://github.com/fwelections/tunisia-election-data/tree/master/2011data/misc/source'>PDF</a> to CSV by <a href='https://github.com/fwelections/tunisia-election-data'>FWElections</a>."
-description: "<p>In a majority based voting system, there are 'wasted' votes that do not correlate to representation in parliament. These include votes for parties that did not win mandates, votes that were cancelled, and blank ballots submitted as protest votes. This visualization reveals districts represented by parties with weak mandates and thus are vulnerable in the upcoming elections. This enables political parties to better understand how to focus their efforts by building coalitions at the local level and develop better strategies for targeting their campaign resources where they are most competitive.</p>"
+    description: "Cet ensemble de données comprend des tableaux avec le nombre de bulletins blancs exprimés par les électeurs par circonscription. Il a été converti du format PDF au format CSV par OpenGovTN."
+description: "<p>les bulletins blancs sont les suffrages exprimés par les électeurs sans cocher un candidat, un parti politique ou une liste de coalition. Dans l’ensemble, un bulletin blanc est exprimé par un électeur qui souhaite exercer son droit de vote, mais n'est pas satisfait de ses options de candidats ou le processus électoral. Lors des élections de l'Assemblée Nationale Constituante de 2011, près de 100.000 électeurs ont voté blanc. Cette visualisation montre le nombre de bulletins blancs exprimés par circonscription électorale de l'ANC aux élections de 2011.</p>"
 ---
-<p> The votes included for consideration are white ballots (protesting by keeping ballot blank), wasted votes (i.e., vote for a party that did not win mandate), annulled votes, and canceled votes.
-</p>
+
 
 Make sure you have read the [documentation regarding installing and setting up a PostGIS-enabled database](!SITE.GITHUB!/blob/gh-pages/setup.md#data-management-and-maps) before proceeding any further.
 
@@ -28,7 +27,7 @@ Two datasets power this map:
 To set up the a table with appropriate columns, run the following SQL: 
 
 <pre>
-create table wasted (
+create table blank (
 	cir_id int,
 	circ_name text,
 	total_votes numeric,
@@ -45,21 +44,10 @@ create table wasted (
 Now run the following from your command line to populate the table: 
 
 <pre>
-wasted-votes.csv | psql -d tunisia -c "COPY wasted FROM STDIN WITH DELIMITER ',' CSV HEADER"
+blank-votes.csv | psql -d tunisia -c "COPY blank FROM STDIN WITH DELIMITER ',' CSV HEADER"
 </pre>
 
-### 2. Update table
-
-We want to map the total number of votes that did not count, so we need to aggregate wasted votes (those votes for parties that did not win mandates, leaving voters un-represented) with cancelled ballots, and blank ballots. 
-
-To create and populate this new column, run the following SQL: 
-
-<pre>
-alter table wasted add column map numeric;
-update wasted set map = wasted + blank_ballots + cancelled_ballots;
-</pre>
-
-### 3. Dissolving Delegations into Districts
+### 2. Dissolving Delegations into Districts
 
 *Note: If you have already performed this step for the Political parties map, you can skip to step 4.*
 
@@ -79,7 +67,7 @@ group by circo_id
 
 ### 4. Joining to geometry 
 
-You should now be able to open the [wasted votes tilemill project](!SITE.GITHUB!/tree/gh-pages/map-src/wasted)
+You should now be able to open the [Blank votes tilemill project](!SITE.GITHUB!/tree/gh-pages/map-src/blank)
 
 We're joining the tabular data to geometry in TileMill's PostGIS plugin. The query is here for your reference, but you should need to perform any further steps. 
 
@@ -96,7 +84,7 @@ We're joining the tabular data to geometry in TileMill's PostGIS plugin. The que
     round((map / total_votes * 100)) as pct_n,
     cast(round((map / total_votes * 100)) as text)||'%' as pct_s,
     cast(round((map / total_votes * 100)) as text)||'%'||E' \n'||circ_name as display
-  from districts a join wasted b 
+  from districts a join blank b 
   on circo_id = cir_id 
 ) as data
 </pre> 

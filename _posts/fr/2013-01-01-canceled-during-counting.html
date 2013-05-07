@@ -1,21 +1,21 @@
 ---
 layout: maps
 category: fr
-title: "Votes invalidated during counting"
-subtitle: "Prevalence of votes invalidated during counting rather than at polling centers"
+title: "Votes qui ne comptent pas"
+subtitle: "Visualisation de la proportion des votes invalidée pendant le dépouillement du scrutin"
 language: fr
 img: "cancelled.png"
 map: "tunisia.map-qyh27u2n,tunisia.cancelled"
-legend: true
+legend: false
 sources:
-  - title: "Number of canceled ballots"
+  - title: "Nombre de bulletins annulés"
     url: "https://github.com/fwelections/tunisia-election-data/tree/master/fulldatasets/results"
-    description: "This dataset canceled ballots during the 2011 Elections in Tunisia. It was originally obtained from the <a href='http://www.isie.tn/Fr/image.php?id=771'>National Constituent Assembly Report on the Elections (PDF)</a>, published by the <a href='http://www.isie.tn'>Independent High Commission for Elections</a> in February, 2012, and provided as .json files by <a href='https://github.com/fwelections/tunisia-election-data'>FWElections</a>."
-description: "<p>This map visualizes the prevalence of votes invalidated during counting rather than those ballots that were invalidated at polling centers. This shows the areas where more robust voter education efforts, or tactile ballots, could have the greatest impact.  Nationwide, the total number of cancelled ballots was under 4%. However, in some areas, mostly rural areas where illiteracy is high and, coincidentally, where unrest and discord is high, the number of cancelled ballots is much higher.</p>"
+    description: "Cet ensemble de données a annulé les bulletins de vote lors des élections de 2011 en Tunisie. Cet ensemble de données a été obtenu à partir du rapport (PDF)  de l'Assemblée Nationale Constituante sur les élections publié par l’ISIE en Février 2012 et fourni sous forme de fichiers .Json par OpenGovTN."
+description: "<p>Cette carte permet de visualiser la proportion de bulletins de vote qui ont été invalidés au cours du dépouillement. Cela peut être  dû à une erreur de l'électeur à marquer le bulletin de vote, à la difficulté de déterminer l'intention de l'électeur, ou dû au fait que l'électeur abîme intentionnellement les bulletins de vote. Cela montre l’importance de l’impact positif d’une éducation plus robuste des électeurs. Au niveau national, près de 150.000 bulletins ont été invalidés lors du dépouillement dans les élections de l'Assemblée Nationale Constituante de 2011.</p>"
 ---
 The map of [where cancelled votes came from](http://fwelections.github.com/databrowser/en/canceled-during-counting/) relies polling center data available as [individual `.json` files](https://github.com/fwelections/tunisia-election-data/tree/master/fulldatasets/results) that were provided as a two CSV tables - one containing latitude + longitude coordinates and the other containing detailed election data. 
 
-NOTE: only 588 out of the 4,800 or so polling centers are currently visualized on the map. While election data has been collected for virtually all polling centers, location data (lat/lon coordinates) has only been collected for 588 polling centers. 
+NOTE: Seule une partie des 4836 centres de vote  est actuellement visualisée sur la carte. Bien que les données électorales aient été recueillies pour pratiquement tous les centres de vote, les données de géolocalisation (latitude et longitude) n'avaient été recueillies que seulement sur une partie des bureaux de vote.
 
 Make sure you have read the [documentation regarding installing and setting up a PostGIS-enabled database](!SITE.GITHUB!/blob/gh-pages/setup.md#data-management-and-maps) before proceeding any further.
 
@@ -136,9 +136,12 @@ create table pc_results as (
 
 You can now use the `pc_results` table in the [canceled-votes tilemill project](!SITE.GITHUB!/tree/gh-pages/map-src/canceled) to style your data.
 
-
 <style type="text/css">
 .pol-party {
 	display: none;
 }
+<script type="text/javascript">
+$('.legend-title').html('Ballots invalidated at counting');
+
+</script>
 </style>

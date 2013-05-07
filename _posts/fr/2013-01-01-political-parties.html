@@ -1,26 +1,26 @@
 ---
 layout: maps
 category: fr
-title: "Political party results"
-subtitle: "Explore the density of different political parties"
+title: "Political party and coalition support"
+subtitle: "Exploring the results of the 2011 National Constituent Assembly Elections"
 language: fr
 img: "party.png"
-map: "tunisia.map-ljvg81zf,tunisia.parties"
-legend: true
+map: "tunisia.map-89hgnk0e,tunisia.parties-support"
+legend: false
 sources:
-  - title: "Tabular data for the 3 major parties"
+  - title: "Les données tabulaires pour les quatre partis et coalitions qui, en plus d'Ennahdha (89 sièges) ont remporté 20 sièges aux élections de 2011."
     csv: "https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty"
-    description: "Tabular data showing 2011 election outcomes by political party."
+    description: "Les données tabulaires pour les quatre partis et coalitions qui, en plus d'Ennahdha (89 sièges) ont remporté 20 sièges aux élections de 2011."
   - title: "Tunisia Delegation Shapefiles"
     url: "https://github.com/fwelections/tunisia-election-data/tree/master/shapes"
-    description: "Dataset containing geometry for Tunisia's Delegations administrative unit."
-description: "<p>This visualization highlights the relative strengths of the three top political parties in Tunisia: Ennahda, CPR, and Ettakatol which form the coalition government in Tunisia. Each province has 3 percantages: blue represents the Ennahdha party, green represents CPR party and orange represent Ettakatol party. The largest number in each province represents the majority party.</p>"
+    description: "L’ensemble des données  contenant la géométrie de l'unité administrative des délégations en Tunisie."
+description: "<p>La visualisation met en évidence les rapports de force entre les partis politiques et les coalitions qui ont remporté 20 sièges ou plus aux élections de l'Assemblée Nationale Constituante de 2011. Chaque circonscription a quatre pourcentages présentés: le vert représente le CPR (qui a remporté 29 sièges), l'or représente l’Aridha (26), l’orange représente Ettakatol (20), et le bleu représente El Joumhouri (20), les pourcentages pour El Joumhouri reflètent les niveaux combinés de l'appui des électeurs pour le PDP (16) et Afek Tounes (4) qui ont fusionné après les élections. </p>"
 ---
+
 The [textual heat map of political party results](http://fwelections.github.com/databrowser/en/political-parties) relies on two data sets: 
 
-- [tabular data for the 3 major parties](https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty)
+- [Tabular data for the four parties and coalitions that, in addition to Ennahdha (89 seats) won 20 or more seats in the 2011 elections.](https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty)
 - geometry for the 27 governorates we will derive from the [delegation shapefiles](https://github.com/fwelections/tunisia-election-data/tree/master/shapes). 
-
 
 ### 1. Dissolving Delegations into Districts
 
@@ -42,7 +42,7 @@ group by circo_id
 
 If you have not already, you will need to import the delegation shapefiles. Detailed information for importing shapefiles can be found in the [Data management + mapping section of Setup.md](!SITE.GITHUB!/blob/gh-pages/setup.md#data-processing-for-making-maps).
 
-To import the tabular data, first set up 3 tables - one for each party (Ennahdha, CPR, and Takattoul). Run the following sql in the `psql` shell.
+To import the tabular data, first set up 4 tables - one for each party (Aritha, CPR, and Takattoul, Joumhouri). Run the following sql in the `psql` shell.
 
 <pre>
 create table takattoul (
@@ -56,7 +56,7 @@ create table takattoul (
 	total_votes_ratio numeric
 );
 
-create table nahdha (
+create table Aritha (
 	district_id int,
 	district text,
 	active_votes numeric,
@@ -77,13 +77,23 @@ create table cpr (
 	total_votes numeric,
 	total_votes_ratio numeric
 );
+create table Joumhouri (
+	district_id int,
+	district text,
+	active_votes numeric,
+	active_ratio numeric,
+	automatic_votes numeric,
+	automatic_ratio numeric,
+	total_votes numeric,
+	total_votes_ratio numeric
+);
 </pre>
 
 To populate the tables you just set up, run these commands from your command shell. They are labeled for your reference. 
 
 <pre>
-# Ennahdha
-cat 2011data/resultsPerParty/nadha.csv | psql -d tunisia -c "COPY nadha FROM STDIN WITH DELIMITER ';' CSV HEADER"
+# Aritha
+cat 2011data/resultsPerParty/Aritha.csv | psql -d tunisia -c "COPY Aritha FROM STDIN WITH DELIMITER ';' CSV HEADER"
 
 
 # takattoul
@@ -104,7 +114,7 @@ select
 	n.total_votes_ratio as ratio_n,
 	n.district_id,
 	n.district
-from nahdha n join 
+from cpr n join 
 	( select 
 		  t.total_votes_ratio as ratio_t,
 		  c.total_votes_ratio as ratio_c,
@@ -159,6 +169,10 @@ create table parties as (
 You are now ready to style your data. See the [Political Parties TileMill project](!SITE.GITHUB!/tree/gh-pages/map-src/parties) for more details.
 <style type="text/css">
 .cancelled-ballots {
+	display: none;
+}
+.pol-party
+{
 	display: none;
 }
 </style>
