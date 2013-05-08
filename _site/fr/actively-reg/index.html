@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+<meta name='apple-mobile-web-app-status-bar-style' content='black' />
+<meta name='apple-mobile-web-app-capable' content='yes' />
+<link rel='shortcut icon' href='/databrowser/img/favicon.ico' type='image/x-icon' />
+<title>Tunisia Election Data | L'inscription des électeurs et la participation électorale</title>
+<link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+<link href='/databrowser/site.css' rel='stylesheet' />
+<link href='/databrowser/maps.css' rel='stylesheet' />
+<script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+<script src='https://raw.github.com/mapbox/mapbox.js/master/extensions/share.js'></script>
+<script src='/databrowser/site.js'></script>
+</head>
+<body class=''>
+
+  <div id='masthead' class='map'>
+    <div class='limiter clearfix'>
+      <a href='/databrowser/' class='title'><span class='icon logo'></span>Tunisia Election Data</a>
+    </div>
+  </div>
+
+  <div class='header'>
+    <div class='limiter clearfix'>
+      <div class='nav'>
+        <a href='/databrowser/fr/projects' class='button'>Projects</a>
+        <a href='#' id='toggle' class='icon toggle'>Toggle Header</a>
+      </div>
+    </div>
+    <div id='controls'></div>
+  </div>
+
+  <div class='map' id='map'></div>
+   <a href='#' id='separator'></a>
+   
+  <div id='shelf' class='shelf' >
+   <div id='description' class='shelf-inner'>
+   
+	
+	<p>Un électeur activement enregistré représente un électeur potentiel selon la liste électorale de référence, qui a choisi de se déplacer au centre d'inscription électorale pour enregistrer ses données avant la tenue des élections. Pendant les élections de l'Assemblé  Nationale Constituante de 2011, l'ISIE. a fortement encouragé les électeurs potentiels à accomplir cette action et ce par le déploiement  de divers efforts tels que le prolongement de la date limite prévue pour cette opération, l'augmentation des centres d'inscription, le déploiement de centres d'inscription mobiles et des campagnes publicitaires de proximité et ce suite au faible taux de participation initialement enregistré lors de la première date limite qui a été prévue pour début Août 2011.   Selon “les statistiques complètes et approfondies de dépouillement des votes” publiées par l’ISIE le 12 Novembre 2011, 4.123.602 électeurs parmi 7.993.924 votants potentiels suivant la base du registre des données des cartes d’identité nationales, se sont enregistrés volontairement pendant la période allant de début Juillet jusqu’à fin Août 2011, soit 51% des électeurs potentiels.  86,4% de ces électeurs ont accomplis leur devoir de vote lors des élections du 23 Octobre 2011.</p>
+	
+   </div>
+  <div id='sources' class='shelf-inner'>
+    
+
+	
+	<div class='source-entry'>
+	<h4 class='data-title'>Pourcentage de participation des électeurs</h4>
+	<p><p>Ce fichier CSV contient le nombre d&#8217;électeurs activement enregistrés qui ont voté et le nombre total d&#8217;électeurs activement enregistrés par circonscription électorale. Ces données ont été obtenues à partir du Rapport (PDF) sur les élections de l&#8217;Assemblée Nationale Constituante, publié par l’ISIE en Février 2012 et converti au format CSV par OpenGovTN.</p></p>
+	   
+	   
+	    
+	   <a class='action data link' href='https://github.com/fwelections/tunisia-election-data/tree/master/2011data/misc'><span class='link'></span>www</a>
+	   
+	</div>
+	
+	 
+   </div>
+  <div id='methodology' class='shelf-inner'>
+	
+
+	<p>Make sure you have read the <a href='http://github.com/fwelections/databrowser/blob/gh-pages/setup.md#data-management-and-maps'>documentation regarding installing and setting up a PostGIS-enabled database</a>.</p>
+
+<h3 id='importing_data_to_postgis'>Importing data to PostGIS</h3>
+
+<p>This map is comprised of two datasets - <a href='https://github.com/fwelections/tunisia-election-data/tree/master/shapes'>District shapefiles</a> and tabular <a href='https://github.com/fwelections/tunisia-election-data/blob/master/2011data/misc/Turnout.csv'>registration and turnout data</a>. To import the shapefiles see the <a href='http://github.com/fwelections/databrowser/blob/gh-pages/setup.md#importing-geographic-data-to-postgis'>setup.md for instructions on importing geographic data</a>.</p>
+
+<p>TODO</p>
+
+<p>You&#8217;re now ready to style your map in TileMill. Create a new project. In TileMill create a PostGIS layer following the <a href='http://mapbox.com/tilemill/docs/guides/postgis-work/'>online documentation</a>, specifying the <code>eligibility</code> table.</p>
+
+<p>Paste in the appropriate html for the and <a href='http://github.com/fwelections/databrowser/blob/gh-pages/map-src/tooltip-src.html'>tooltip</a> (labeled &#8216;eligibility&#8217;) See the <a href='http://github.com/fwelections/databrowser/tree/gh-pages/map-src/eligibility'>Eligibility TileMill project</a> for CartoCss styles.</p>
+	
+   </div>
+</div>
+  <div class='downcontrols'>
+      <a id="desc" href="#" class='active' rel='description'><span>Description</span></a>
+      <a id="about" href="#" rel='sources'><span>About the data</span></a>
+      <a href="#" id="meth" rel='methodology'><span>Methodology</span></a>
+ </div>
+  <div class='map-overlay fractively-reg'>
+    <div id='infographic' style='display:none'>
+  </div>
+  
+
+</div>
+  <div class='attribution'>
+    A project by
+    <a href='http://www.democracyinternational.com'>Democracy International</a>, <a href='http://newrightsgroup.net'>New Rights Group</a> and <a href='http://developmentseed.org'>DevelopmentSeed</a> 
+  </div>
+</div>
+
+<style>
+  /* Using fr find out the .tooltip lang-*
+   * We should display:block to. */
+  .tooltip .lang-fr,
+  .tootip .lang-fr {
+    display:block!important;
+  }
+</style>
+
+
+
+<script>
+$(function () {
+  mapbox.load('tunisia.map-76ss13lc,tunisia.acvtivelyreg', function(o) {
+      var map = mapbox.map('map');
+      map.addLayer(o.layer)
+      map.setZoomRange(7, 12);
+      
+      map.zoom(8).center({lat:36.18, lon:10.569})
+      map.setPanLimits([{ lat: 2.0532, lon:4.2235 }, { lat: 42.5925, lon:17.8268 }]);
+
+
+      
+
+    map.interaction.auto()
+    map.interaction.on('on');
+    map.interaction.off('off');
+    map.interaction.on({
+        on: function(o) {
+            $('.value').digits();
+        },
+        off: function(){
+          $('.wax-tooltip').hide();
+        }
+    });
+
+      var c = document.getElementById('controls');
+      map.ui.zoomer.add().appendTo(c);
+      mapbox.share().add().appendTo(c);
+      map.ui.hash.add();
+  });
+
+  //Modal Popup box for data
+  $('a#learn-more').bind('click', openModal);
+
+  function openModal() {
+    $('#modal').fadeIn('fast');
+    window.location.hash = 'learn-more'
+    return false;
+  }
+
+  if (location.hash === '#learn-more') {
+    openModal();
+  }
+
+  $('.close').click(function (e) {
+    $('#overlay, #modal').fadeOut();
+    window.location.hash = '';
+    return false;
+  });
+});
+
+
+  $('#toggle').click(function(){
+    $('.header').toggleClass('active-header', 20000 );
+    $('#my-slider').toggle()
+  })
+
+  
+</script>
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-88478-37']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>
+

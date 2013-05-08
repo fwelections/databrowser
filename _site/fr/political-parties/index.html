@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+<meta name='apple-mobile-web-app-status-bar-style' content='black' />
+<meta name='apple-mobile-web-app-capable' content='yes' />
+<link rel='shortcut icon' href='/databrowser/img/favicon.ico' type='image/x-icon' />
+<title>Tunisia Election Data | Political party and coalition support</title>
+<link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+<link href='/databrowser/site.css' rel='stylesheet' />
+<link href='/databrowser/maps.css' rel='stylesheet' />
+<script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+<script src='https://raw.github.com/mapbox/mapbox.js/master/extensions/share.js'></script>
+<script src='/databrowser/site.js'></script>
+</head>
+<body class=''>
+
+  <div id='masthead' class='map'>
+    <div class='limiter clearfix'>
+      <a href='/databrowser/' class='title'><span class='icon logo'></span>Tunisia Election Data</a>
+    </div>
+  </div>
+
+  <div class='header'>
+    <div class='limiter clearfix'>
+      <div class='nav'>
+        <a href='/databrowser/fr/projects' class='button'>Projects</a>
+        <a href='#' id='toggle' class='icon toggle'>Toggle Header</a>
+      </div>
+    </div>
+    <div id='controls'></div>
+  </div>
+
+  <div class='map' id='map'></div>
+   <a href='#' id='separator'></a>
+   
+  <div id='shelf' class='shelf' >
+   <div id='description' class='shelf-inner'>
+   
+	
+	<p>La visualisation met en évidence les rapports de force entre les partis politiques et les coalitions qui ont remporté 20 sièges ou plus aux élections de l'Assemblée Nationale Constituante de 2011. Chaque circonscription a quatre pourcentages présentés: le vert représente le CPR (qui a remporté 29 sièges), l'or représente l’Aridha (26), l’orange représente Ettakatol (20), et le bleu représente El Joumhouri (20), les pourcentages pour El Joumhouri reflètent les niveaux combinés de l'appui des électeurs pour le PDP (16) et Afek Tounes (4) qui ont fusionné après les élections. </p>
+	
+   </div>
+  <div id='sources' class='shelf-inner'>
+    
+
+	
+	<div class='source-entry'>
+	<h4 class='data-title'>Les données tabulaires pour les quatre partis et coalitions qui, en plus d'Ennahdha (89 sièges) ont remporté 20 sièges aux élections de 2011.</h4>
+	<p><p>Les données tabulaires pour les quatre partis et coalitions qui, en plus d&#8217;Ennahdha (89 sièges) ont remporté 20 sièges aux élections de 2011.</p></p>
+	   
+	   <a class='action data csv' href='https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty'><span class='csv'></span>CSV</a>
+	   
+	   
+	    
+	</div>
+	
+	<div class='source-entry'>
+	<h4 class='data-title'>Tunisia Delegation Shapefiles</h4>
+	<p><p>L’ensemble des données contenant la géométrie de l&#8217;unité administrative des délégations en Tunisie.</p></p>
+	   
+	   
+	    
+	   <a class='action data link' href='https://github.com/fwelections/tunisia-election-data/tree/master/shapes'><span class='link'></span>www</a>
+	   
+	</div>
+	
+	 
+   </div>
+  <div id='methodology' class='shelf-inner'>
+	
+
+	<p>The <a href='http://fwelections.github.com/databrowser/en/political-parties'>textual heat map of political party results</a> relies on two data sets:</p>
+
+<ul>
+<li><a href='https://github.com/fwelections/tunisia-election-data/tree/master/2011data/resultsPerParty'>Tabular data for the four parties and coalitions that, in addition to Ennahdha (89 seats) won 20 or more seats in the 2011 elections.</a></li>
+
+<li>geometry for the 27 governorates we will derive from the <a href='https://github.com/fwelections/tunisia-election-data/tree/master/shapes'>delegation shapefiles</a>.</li>
+</ul>
+
+<h3 id='1_dissolving_delegations_into_districts'>1. Dissolving Delegations into Districts</h3>
+
+<p>Since the party data has a district-level resolution, we need to create district polygons out of <a href='https://github.com/fwelections/tunisia-election-data/tree/master/shapes'>delegation polygons that we already imported</a>.</p>
+
+<p>To do this you&#8217;ll need to load the <code>filter_rings()</code> function explained in <a href='http://www.spatialdbadvisor.com/postgis_tips_tricks/92/filtering-rings-in-polygon-postgis'>this post</a>. This functions removes artifacts left by unioning each district&#8217;s member delegations. Once you&#8217;ve loaded <a href='https://gist.github.com/ian29/5091516'>the function</a> into your database, run the following query.</p>
+<pre>
+create table districts as (
+select
+	circo_id,
+	filter_rings(st_union(the_geom),2) as the_geom
+from delegations
+group by circo_id
+);
+</pre>
+<h3 id='2_importing_party_data_to_postgis'>2. Importing party data to PostGIS</h3>
+
+<p>If you have not already, you will need to import the delegation shapefiles. Detailed information for importing shapefiles can be found in the <a href='http://github.com/fwelections/databrowser/blob/gh-pages/setup.md#data-processing-for-making-maps'>Data management + mapping section of Setup.md</a>.</p>
+
+<p>To import the tabular data, first set up 4 tables - one for each party (Aritha, CPR, and Takattoul, Joumhouri). Run the following sql in the <code>psql</code> shell.</p>
+<pre>
+create table takattoul (
+	district_id int,
+	district text,
+	active_votes numeric,
+	active_ratio numeric,
+	automatic_votes numeric,
+	automatic_ratio numeric,
+	total_votes numeric,
+	total_votes_ratio numeric
+);
+
+create table Aritha (
+	district_id int,
+	district text,
+	active_votes numeric,
+	active_ratio numeric,
+	automatic_votes numeric,
+	automatic_ratio numeric,
+	total_votes numeric,
+	total_votes_ratio numeric
+);
+
+create table cpr (
+	district_id int,
+	district text,
+	active_votes numeric,
+	active_ratio numeric,
+	automatic_votes numeric,
+	automatic_ratio numeric,
+	total_votes numeric,
+	total_votes_ratio numeric
+);
+create table Joumhouri (
+	district_id int,
+	district text,
+	active_votes numeric,
+	active_ratio numeric,
+	automatic_votes numeric,
+	automatic_ratio numeric,
+	total_votes numeric,
+	total_votes_ratio numeric
+);
+</pre>
+<p>To populate the tables you just set up, run these commands from your command shell. They are labeled for your reference.</p>
+<pre>
+# Aritha
+cat 2011data/resultsPerParty/Aritha.csv | psql -d tunisia -c "COPY Aritha FROM STDIN WITH DELIMITER ';' CSV HEADER"
+
+
+# takattoul
+cat 2011data/resultsPerParty/takattoul.csv | psql -d tunisia -c "COPY takattoul FROM STDIN WITH DELIMITER ';' CSV HEADER"
+
+# CPR
+cat 2011data/resultsPerParty/cpr.csv | psql -d tunisia -c "COPY cpr FROM STDIN WITH DELIMITER ';' CSV HEADER"
+</pre>
+<h3 id='3_joining_all_three_parties_tables'>3. Joining all three parties&#8217; tables</h3>
+
+<p>In order to see data for all three parties associated in one table, we will need to join two parties&#8217; tables together for joining the third. Thankfully the <code>district_id</code> key is consistent across tables. To join, run</p>
+<pre>
+select
+	b.ratio_t,
+	b.ratio_c,
+	n.total_votes_ratio as ratio_n,
+	n.district_id,
+	n.district
+from cpr n join 
+	( select 
+		  t.total_votes_ratio as ratio_t,
+		  c.total_votes_ratio as ratio_c,
+		  c.district_id
+	    from takattoul t join cpr c
+	  on t.district_id = c.district_id
+	) as b
+on n.district_id = b.district_id;
+</pre>
+<p>In addition to joining the relevant columns into one table, this query aliases the <code>total_votes_ratio</code> column from each table as <code>ratio_x</code> where <code>x</code> is the first letter of each party&#8217;s (and table&#8217;s) name. It will be important to remember the naming conventions implemented now, as they will have implications at various steps downstream.</p>
+
+<h3 id='4_joining_spatial_data_to_tabular_data'>4. Joining spatial data to tabular data</h3>
+
+<p>To join the tabular data compiled in the previous to the district polygons we created earlier, run the following SQL:</p>
+<pre>
+create table parties as (
+	select
+		g.circo_id,
+		g.the_geom,
+		d.district_id,
+		d.district,
+		d.ratio_t,
+		d.ratio_n,
+		d.ratio_c,
+		coalesce(cast(round(d.ratio_t) as text)||'%', 'n/a') as ratio_tc,
+		coalesce(cast(round(d.ratio_n) as text)||'%', 'n/a') as ratio_nc,
+		coalesce(cast(round(d.ratio_c) as text)||'%', 'n/a') as ratio_cc
+	from districts g left join 
+	  ( select
+		  b.ratio_t,
+		  b.ratio_c,
+		  n.total_votes_ratio as ratio_n,
+		  n.district_id,
+		  n.district
+	  	from nahdha n join 
+		  ( select 
+			  t.total_votes_ratio as ratio_t,
+			  c.total_votes_ratio as ratio_c,
+			  c.district_id
+		  	from takattoul t join cpr c
+		  	on t.district_id = c.district_id
+		  ) as b
+		on n.district_id = b.district_id
+	  ) as d
+	on circo_id = d.district_id
+);
+</pre>
+<p>You are now ready to style your data. See the <a href='http://github.com/fwelections/databrowser/tree/gh-pages/map-src/parties'>Political Parties TileMill project</a> for more details. <style type='text/css'>
+.cancelled-ballots {
+	display: none;
+}
+.pol-party
+{
+	display: none;
+}
+</style></p>
+	
+   </div>
+</div>
+  <div class='downcontrols'>
+      <a id="desc" href="#" class='active' rel='description'><span>Description</span></a>
+      <a id="about" href="#" rel='sources'><span>About the data</span></a>
+      <a href="#" id="meth" rel='methodology'><span>Methodology</span></a>
+ </div>
+  <div class='map-overlay frpolitical-parties'>
+    <div id='infographic' style='display:none'>
+  </div>
+  
+
+</div>
+  <div class='attribution'>
+    A project by
+    <a href='http://www.democracyinternational.com'>Democracy International</a>, <a href='http://newrightsgroup.net'>New Rights Group</a> and <a href='http://developmentseed.org'>DevelopmentSeed</a> 
+  </div>
+</div>
+
+<style>
+  /* Using fr find out the .tooltip lang-*
+   * We should display:block to. */
+  .tooltip .lang-fr,
+  .tootip .lang-fr {
+    display:block!important;
+  }
+</style>
+
+
+
+<script>
+$(function () {
+  mapbox.load('tunisia.map-89hgnk0e,tunisia.parties-support', function(o) {
+      var map = mapbox.map('map');
+      map.addLayer(o.layer)
+      map.setZoomRange(7, 12);
+      
+      map.zoom(8).center({lat:36.18, lon:10.569})
+      map.setPanLimits([{ lat: 2.0532, lon:4.2235 }, { lat: 42.5925, lon:17.8268 }]);
+
+
+      
+
+    map.interaction.auto()
+    map.interaction.on('on');
+    map.interaction.off('off');
+    map.interaction.on({
+        on: function(o) {
+            $('.value').digits();
+        },
+        off: function(){
+          $('.wax-tooltip').hide();
+        }
+    });
+
+      var c = document.getElementById('controls');
+      map.ui.zoomer.add().appendTo(c);
+      mapbox.share().add().appendTo(c);
+      map.ui.hash.add();
+  });
+
+  //Modal Popup box for data
+  $('a#learn-more').bind('click', openModal);
+
+  function openModal() {
+    $('#modal').fadeIn('fast');
+    window.location.hash = 'learn-more'
+    return false;
+  }
+
+  if (location.hash === '#learn-more') {
+    openModal();
+  }
+
+  $('.close').click(function (e) {
+    $('#overlay, #modal').fadeOut();
+    window.location.hash = '';
+    return false;
+  });
+});
+
+
+  $('#toggle').click(function(){
+    $('.header').toggleClass('active-header', 20000 );
+    $('#my-slider').toggle()
+  })
+
+  
+</script>
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-88478-37']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+<meta name='apple-mobile-web-app-status-bar-style' content='black' />
+<meta name='apple-mobile-web-app-capable' content='yes' />
+<link rel='shortcut icon' href='/databrowser/img/favicon.ico' type='image/x-icon' />
+<title>Tunisia Election Data | Le scrutin et la représentation politique</title>
+<link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+<link href='/databrowser/site.css' rel='stylesheet' />
+<link href='/databrowser/maps.css' rel='stylesheet' />
+<script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+<script src='https://raw.github.com/mapbox/mapbox.js/master/extensions/share.js'></script>
+<script src='/databrowser/site.js'></script>
+</head>
+<body class=''>
+
+  <div id='masthead' class='map'>
+    <div class='limiter clearfix'>
+      <a href='/databrowser/' class='title'><span class='icon logo'></span>Tunisia Election Data</a>
+    </div>
+  </div>
+
+  <div class='header'>
+    <div class='limiter clearfix'>
+      <div class='nav'>
+        <a href='/databrowser/fr/projects' class='button'>Projects</a>
+        <a href='#' id='toggle' class='icon toggle'>Toggle Header</a>
+      </div>
+    </div>
+    <div id='controls'></div>
+  </div>
+
+  <div class='map' id='map'></div>
+   <a href='#' id='separator'></a>
+   
+  <div id='shelf' class='shelf' >
+   <div id='description' class='shelf-inner'>
+   
+	
+	<p>les bulletins blancs sont les suffrages exprimés par les électeurs sans cocher un candidat, un parti politique ou une liste de coalition. Dans l’ensemble, un bulletin blanc est exprimé par un électeur qui souhaite exercer son droit de vote, mais n'est pas satisfait de ses options de candidats ou le processus électoral. Lors des élections de l'Assemblée Nationale Constituante de 2011, près de 100.000 électeurs ont voté blanc. Cette visualisation montre le nombre de bulletins blancs exprimés par circonscription électorale de l'ANC aux élections de 2011.</p>
+	
+   </div>
+  <div id='sources' class='shelf-inner'>
+    
+
+	
+	<div class='source-entry'>
+	<h4 class='data-title'>Résultats des élections</h4>
+	<p><p>Cet ensemble de données comprend des tableaux avec le nombre de bulletins blancs exprimés par les électeurs par circonscription. Il a été converti du format PDF au format CSV par OpenGovTN.</p></p>
+	   
+	   
+	    
+	   <a class='action data link' href='https://github.com/fwelections/tunisia-election-data/tree/master/2011data/misc'><span class='link'></span>www</a>
+	   
+	</div>
+	
+	 
+   </div>
+  <div id='methodology' class='shelf-inner'>
+	
+
+	<p>Make sure you have read the <a href='http://github.com/fwelections/databrowser/blob/gh-pages/setup.md#data-management-and-maps'>documentation regarding installing and setting up a PostGIS-enabled database</a> before proceeding any further.</p>
+
+<p>Two datasets power this map:</p>
+
+<ul>
+<li><a href=''>full 2011 election results</a> available as individual <code>.json</code> files, parsed and provided as a single district-level CSV.</li>
+
+<li>geometry for the 27 districts derived from the <a href='https://github.com/fwelections/tunisia-election-data/tree/master/shapes'>delegtion shapefiles</a>.</li>
+</ul>
+
+<h3 id='1_import_data_to_postgis'>1. Import data to PostGIS</h3>
+
+<p>To set up the a table with appropriate columns, run the following SQL:</p>
+<pre>
+create table blank (
+	cir_id int,
+	circ_name text,
+	total_votes numeric,
+	votes_ennahdha numeric,
+	votes_cpr numeric,
+	votes_fdtl numeric,
+	other_winning numeric,
+	Wasted numeric,
+	Blank_ballots numeric,
+	cancelled_ballots numeric
+);
+</pre>
+<p>Now run the following from your command line to populate the table:</p>
+<pre>
+blank-votes.csv | psql -d tunisia -c "COPY blank FROM STDIN WITH DELIMITER ',' CSV HEADER"
+</pre>
+<h3 id='2_dissolving_delegations_into_districts'>2. Dissolving Delegations into Districts</h3>
+
+<p><em>Note: If you have already performed this step for the Political parties map, you can skip to step 4.</em></p>
+
+<p>Since this data has a district-level resolution, we need to create district polygons out of <a href='https://github.com/fwelections/tunisia-election-data/tree/master/shapes'>delegation polygons that we already imported</a>.</p>
+
+<p>To do this you&#8217;ll need to load the <code>filter_rings()</code> function explained in <a href='http://www.spatialdbadvisor.com/postgis_tips_tricks/92/filtering-rings-in-polygon-postgis'>this post</a>. This functions removes artifacts left by unioning each district&#8217;s member delegations. Once you&#8217;ve loaded <a href='https://gist.github.com/ian29/5091516'>the function</a> into your database, run the following query.</p>
+<pre>
+create table districts as (
+select
+	circo_id,
+	filter_rings(st_union(the_geom),2) as the_geom
+from delegations
+group by circo_id
+);
+</pre>
+<h3 id='4_joining_to_geometry'>4. Joining to geometry</h3>
+
+<p>You should now be able to open the <a href='http://github.com/fwelections/databrowser/tree/gh-pages/map-src/blank'>Blank votes tilemill project</a></p>
+
+<p>We&#8217;re joining the tabular data to geometry in TileMill&#8217;s PostGIS plugin. The query is here for your reference, but you should need to perform any further steps.</p>
+<pre>
+( select
+    the_geom,
+    cir_id,
+    circ_name,
+    blank_ballots,
+    cancelled_ballots,
+    wasted,
+    map,
+    total_votes,
+    round((map / total_votes * 100)) as pct_n,
+    cast(round((map / total_votes * 100)) as text)||'%' as pct_s,
+    cast(round((map / total_votes * 100)) as text)||'%'||E' \n'||circ_name as display
+  from districts a join blank b 
+  on circo_id = cir_id 
+) as data
+</pre>
+	
+   </div>
+</div>
+  <div class='downcontrols'>
+      <a id="desc" href="#" class='active' rel='description'><span>Description</span></a>
+      <a id="about" href="#" rel='sources'><span>About the data</span></a>
+      <a href="#" id="meth" rel='methodology'><span>Methodology</span></a>
+ </div>
+  <div class='map-overlay frblanc-ballots'>
+    <div id='infographic' style='display:none'>
+  </div>
+  
+
+</div>
+  <div class='attribution'>
+    A project by
+    <a href='http://www.democracyinternational.com'>Democracy International</a>, <a href='http://newrightsgroup.net'>New Rights Group</a> and <a href='http://developmentseed.org'>DevelopmentSeed</a> 
+  </div>
+</div>
+
+<style>
+  /* Using fr find out the .tooltip lang-*
+   * We should display:block to. */
+  .tooltip .lang-fr,
+  .tootip .lang-fr {
+    display:block!important;
+  }
+</style>
+
+
+
+<script>
+$(function () {
+  mapbox.load('tunisia.map-0gn2ey54,tunisia.blank-ballots', function(o) {
+      var map = mapbox.map('map');
+      map.addLayer(o.layer)
+      map.setZoomRange(7, 12);
+      
+      map.zoom(8).center({lat:36.18, lon:10.569})
+      map.setPanLimits([{ lat: 2.0532, lon:4.2235 }, { lat: 42.5925, lon:17.8268 }]);
+
+
+      
+
+    map.interaction.auto()
+    map.interaction.on('on');
+    map.interaction.off('off');
+    map.interaction.on({
+        on: function(o) {
+            $('.value').digits();
+        },
+        off: function(){
+          $('.wax-tooltip').hide();
+        }
+    });
+
+      var c = document.getElementById('controls');
+      map.ui.zoomer.add().appendTo(c);
+      mapbox.share().add().appendTo(c);
+      map.ui.hash.add();
+  });
+
+  //Modal Popup box for data
+  $('a#learn-more').bind('click', openModal);
+
+  function openModal() {
+    $('#modal').fadeIn('fast');
+    window.location.hash = 'learn-more'
+    return false;
+  }
+
+  if (location.hash === '#learn-more') {
+    openModal();
+  }
+
+  $('.close').click(function (e) {
+    $('#overlay, #modal').fadeOut();
+    window.location.hash = '';
+    return false;
+  });
+});
+
+
+  $('#toggle').click(function(){
+    $('.header').toggleClass('active-header', 20000 );
+    $('#my-slider').toggle()
+  })
+
+  
+</script>
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-88478-37']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>
+
